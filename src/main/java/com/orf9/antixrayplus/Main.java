@@ -1,6 +1,7 @@
 package com.orf9.antixrayplus;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -91,6 +92,13 @@ public final class Main extends JavaPlugin implements Listener {
             if (ratio > maxRatio && stoneMined > minStone && diamondOreMined > minDiamondOre){
                 getLogger().log(Level.WARNING,"Player " + player.getName() + " may be using cheats! Ratio: " + ratio);
             }
+
+            Bukkit.getOnlinePlayers().forEach(pl -> {
+                if (pl.hasPermission("antixrayplus.alerts")){
+                    pl.sendMessage(ChatColor.RED + "Player "+ player + " may be using XRAY! Ratio:" + ratio);
+                }
+            });
+
             getPlayerData().set(uuid + ".diamondOreMined", diamondOreMined);
             getPlayerData().set(uuid + ".stoneMined", stoneMined);
             getPlayerData().set(uuid + ".ratio", ratio);

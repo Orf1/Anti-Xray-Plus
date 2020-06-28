@@ -36,7 +36,7 @@ public class commandAntiXrayPlus implements CommandExecutor {
                         int minDiamondOre = main.getConfig().getInt("threshold.diamond-ore-minimum");
 
                         if (ratio > maxRatio && stoneMined > minStone && diamondOreMined > minDiamondOre) {
-                            player.sendMessage(ChatColor.RED + "Player may be using cheats! Ratio: " + ratio);
+                            player.sendMessage(ChatColor.RED + "Player may be using XRAY! Ratio: " + ratio);
                         }
 
                     } else {
