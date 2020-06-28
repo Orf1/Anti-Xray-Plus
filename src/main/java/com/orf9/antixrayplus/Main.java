@@ -30,6 +30,7 @@ public final class Main extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 
+
         Bukkit.getPluginManager().registerEvents(this, this);
 
         this.getConfig().options().copyDefaults();
@@ -42,6 +43,8 @@ public final class Main extends JavaPlugin implements Listener {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        int pluginId = 8008; // <-- Replace with the id of your plugin!
+        Metrics metrics = new Metrics(this, pluginId);
     }
 
     @Override
