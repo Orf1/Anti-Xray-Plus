@@ -20,7 +20,7 @@ import java.util.logging.Level;
 
 
 public final class Main extends JavaPlugin implements Listener {
-
+    Main main = this;
     private File playerDataFile;
     private YamlConfiguration modifyPlayerData;
 
@@ -84,8 +84,12 @@ public final class Main extends JavaPlugin implements Listener {
         }
         if (stoneMined != oldStoneMined || diamondOreMined != oldDiamondOreMined){
             ratio = (double) diamondOreMined / (double) stoneMined;
-            if (ratio > getConfig().getDouble("threshold") && stoneMined > getConfig().getInt("minimum")){
 
+            double maxRatio = main.getConfig().getDouble("threshold.max-ratio");
+            int minStone = main.getConfig().getInt("threshold.stone-minimum");
+            int minDiamondOre = main.getConfig().getInt("threshold.diamond-ore-minimum");
+
+            if (ratio > maxRatio && stoneMined > minStone && diamondOreMined > minDiamondOre){
                 getLogger().log(Level.WARNING,"Player " + player.getName() + " may be using cheats! Ratio: " + ratio);
             }
             getPlayerData().set(uuid + ".diamondOreMined", diamondOreMined);

@@ -1,4 +1,4 @@
-//Ratio of diamond to stone that is considered suspicious
-threshold: 0.002
-//Minimum amount of stone before flagging a high ratio
-minumum: 1000
+threshold:
+  max-ratio: '0.002'
+  stone-minimum: '512'
+  diamond-ore-minimum: '64'

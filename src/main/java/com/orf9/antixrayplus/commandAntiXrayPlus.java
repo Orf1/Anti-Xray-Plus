@@ -8,6 +8,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.logging.Level;
+
 public class commandAntiXrayPlus implements CommandExecutor {
     private final Main main = JavaPlugin.getPlugin(Main.class);
     @Override
@@ -29,7 +31,12 @@ public class commandAntiXrayPlus implements CommandExecutor {
                     player.sendMessage("Diamond Ore: " + diamondOreMined);
                     player.sendMessage("Stone: " + stoneMined);
                     player.sendMessage("Ratio of Diamond to Stone: " + ratio);
-                    if (ratio > main.getConfig().getDouble("threshold") && stoneMined > main.getConfig().getInt("minimum")){
+
+                    double maxRatio = main.getConfig().getDouble("threshold.max-ratio");
+                    int minStone = main.getConfig().getInt("threshold.stone-minimum");
+                    int minDiamondOre = main.getConfig().getInt("threshold.diamond-ore-minimum");
+
+                    if (ratio > maxRatio && stoneMined > minStone && diamondOreMined > minDiamondOre){
                         player.sendMessage(ChatColor.RED + "Player may be using cheats! Ratio: " + ratio);
                     }
 
