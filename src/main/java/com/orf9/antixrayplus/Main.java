@@ -75,12 +75,14 @@ public final class Main extends JavaPlugin implements Listener {
         int diamondOreMined = oldDiamondOreMined;
 
         double ratio;
+        boolean wasDiamond = false;
 
         if (block.getType().equals(Material.DIAMOND_ORE)){
             ItemStack item = player.getInventory().getItemInMainHand();
             if (!item.containsEnchantment(Enchantment.SILK_TOUCH)){
                 diamondOreMined++;
                 getPlayerData().set(uuid + ".diamondOreMined", diamondOreMined);
+                wasDiamond = true;
                 try {
                     getPlayerData().save(getPlayerDataFile());
                 } catch (IOException ioException) {
@@ -120,7 +122,7 @@ public final class Main extends JavaPlugin implements Listener {
 
                     if (diamondOreMined > minDiamondOre) {
 
-                        if (ratio > maxRatio) {
+                        if (ratio > maxRatio || wasDiamond == true) {
 
                             getLogger().log(Level.WARNING, "Player " + player.getName() + " may be using cheats! Ratio: " + ratio);
 
