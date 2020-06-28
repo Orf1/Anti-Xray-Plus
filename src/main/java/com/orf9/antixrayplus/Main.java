@@ -86,25 +86,26 @@ public final class Main extends JavaPlugin implements Listener {
             stoneMined++;
         }
         if (stoneMined != oldStoneMined || diamondOreMined != oldDiamondOreMined){
-            ratio = (double) diamondOreMined / (double) stoneMined;
+            if (!(diamondOreMined == 0) || !(stoneMined == 0)){
+                ratio = (double) diamondOreMined / (double) stoneMined;
+                getPlayerData().set(uuid + ".ratio", ratio);
 
-            double maxRatio = main.getConfig().getDouble("threshold.max-ratio");
-            int minStone = main.getConfig().getInt("threshold.stone-minimum");
-            int minDiamondOre = main.getConfig().getInt("threshold.diamond-ore-minimum");
-
-            if (ratio > maxRatio && stoneMined > minStone && diamondOreMined > minDiamondOre){
-                getLogger().log(Level.WARNING,"Player " + player.getName() + " may be using cheats! Ratio: " + ratio);
-            }
-
-            Bukkit.getOnlinePlayers().forEach(pl -> {
-                if (pl.hasPermission("antixrayplus.alerts")){
-                    pl.sendMessage(ChatColor.RED + "Player "+ player + " may be using XRAY! Ratio:" + ratio);
+                double maxRatio = main.getConfig().getDouble("threshold.max-ratio");
+                int minStone = main.getConfig().getInt("threshold.stone-minimum");
+                int minDiamondOre = main.getConfig().getInt("threshold.diamond-ore-minimum");
+                if (ratio > maxRatio && stoneMined > minStone && diamondOreMined > minDiamondOre){
+                    getLogger().log(Level.WARNING,"Player " + player.getName() + " may be using cheats! Ratio: " + ratio);
+                    Bukkit.getOnlinePlayers().forEach(pl -> {
+                        if (pl.hasPermission("antixrayplus.alerts")){
+                            pl.sendMessage(ChatColor.RED + "Player "+ player + " may be using XRAY! Ratio:" + ratio);
+                        }
+                    });
                 }
-            });
+            }
 
             getPlayerData().set(uuid + ".diamondOreMined", diamondOreMined);
             getPlayerData().set(uuid + ".stoneMined", stoneMined);
-            getPlayerData().set(uuid + ".ratio", ratio);
+
 
             try {
                 getPlayerData().save(getPlayerDataFile());
