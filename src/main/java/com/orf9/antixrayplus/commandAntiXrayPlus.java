@@ -1,6 +1,7 @@
 package com.orf9.antixrayplus;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -24,10 +25,14 @@ public class commandAntiXrayPlus implements CommandExecutor {
                     int diamondOreMined = (int) main.getPlayerData().get(uuid + ".diamondOreMined");
                     double ratio = (double) main.getPlayerData().get(uuid + ".ratio");
 
-                    player.sendMessage("Stats for: " + target.getName());
-                    player.sendMessage("diamond_ore mined: " + diamondOreMined);
-                    player.sendMessage("stone mined: " + stoneMined);
-                    player.sendMessage("Ratio of diamond_ore to stone: " + ratio);
+                    player.sendMessage("Blocks mined by: " + ChatColor.GREEN + target.getName());
+                    player.sendMessage("Diamond Ore: " + diamondOreMined);
+                    player.sendMessage("Stone: " + stoneMined);
+                    player.sendMessage("Ratio of Diamond to Stone: " + ratio);
+                    if (ratio > main.getConfig().getDouble("threshold") && stoneMined > main.getConfig().getInt("minimum")){
+                        player.sendMessage(ChatColor.RED + "Player may be using cheats! Ratio: " + ratio);
+                    }
+
                 }else {
                     player.sendMessage("Invalid Arguments! Usage: /antixrayplus [player]");
                 }

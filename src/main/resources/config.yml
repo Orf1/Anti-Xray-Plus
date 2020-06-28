@@ -1,1 +1,4 @@
-test: 1
+//Ratio of diamond to stone that is considered suspicious
+threshold: 0.002
+//Minimum amount of stone before flagging a high ratio
+minumum: 1000

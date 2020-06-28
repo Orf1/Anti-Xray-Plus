@@ -1,6 +1,7 @@
 package com.orf9.antixrayplus;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -15,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.logging.Level;
 
 
 public final class Main extends JavaPlugin implements Listener {
@@ -82,7 +84,10 @@ public final class Main extends JavaPlugin implements Listener {
         }
         if (stoneMined != oldStoneMined || diamondOreMined != oldDiamondOreMined){
             ratio = (double) diamondOreMined / (double) stoneMined;
+            if (ratio > getConfig().getDouble("threshold") && stoneMined > getConfig().getInt("minimum")){
 
+                getLogger().log(Level.WARNING,"Player " + player.getName() + " may be using cheats! Ratio: " + ratio);
+            }
             getPlayerData().set(uuid + ".diamondOreMined", diamondOreMined);
             getPlayerData().set(uuid + ".stoneMined", stoneMined);
             getPlayerData().set(uuid + ".ratio", ratio);
@@ -100,9 +105,6 @@ public final class Main extends JavaPlugin implements Listener {
         Player player = e.getPlayer();
         String uuid = player.getUniqueId().toString();
 
-        getPlayerData().createSection(uuid + ".playerName");
-        getPlayerData().set(uuid + ".playerName", player.getName());
-
         if (!getPlayerData().contains(uuid)){
             getPlayerData().createSection(uuid);
             getPlayerData().createSection(uuid + ".playerName");
@@ -111,9 +113,9 @@ public final class Main extends JavaPlugin implements Listener {
             getPlayerData().createSection(uuid + ".ratio");
 
             getPlayerData().set(uuid + ".playerName", player.getName());
-            getPlayerData().set(uuid + ".diamondOreMined", 1);
-            getPlayerData().set(uuid + ".stoneMined", 1);
-            getPlayerData().set(uuid + ".ratio", 1.0);
+            getPlayerData().set(uuid + ".diamondOreMined", 0);
+            getPlayerData().set(uuid + ".stoneMined", 0);
+            getPlayerData().set(uuid + ".ratio", 0);
 
             try {
                 getPlayerData().save(getPlayerDataFile());
