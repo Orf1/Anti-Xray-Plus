@@ -1,4 +1,4 @@
-name: Anti Xray Plus
+name: AntiXrayPlus
 version: ${project.version}
 main: com.orf9.antixrayplus.Main
 api-version: 1.15.2
