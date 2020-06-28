@@ -33,9 +33,20 @@ public class commandAntiXrayPlus implements CommandExecutor {
                             player.sendMessage("Stone: " + stoneMined);
                             player.sendMessage("Ratio of Diamond to Stone: " + ratio);
 
-                            double maxRatio = main.getConfig().getDouble("threshold.max-ratio");
-                            int minStone = main.getConfig().getInt("threshold.stone-minimum");
-                            int minDiamondOre = main.getConfig().getInt("threshold.diamond-ore-minimum");
+                            double maxRatio = main.getConfig().getDouble("maxRatio");
+
+                            int minStone = main.getConfig().getInt("stoneMinimum");
+                            int minDiamondOre = main.getConfig().getInt("DiamondMinimum");
+
+                            if (minStone == 0){
+                                minStone = 1024;
+                            }
+                            if (minDiamondOre == 0){
+                                minDiamondOre = 32;
+                            }
+                            if (maxRatio == 0){
+                                maxRatio = 0.002;
+                            }
 
                             if (ratio > maxRatio && stoneMined > minStone && diamondOreMined > minDiamondOre) {
                                 player.sendMessage(ChatColor.RED + "Player may be using XRAY! Ratio: " + ratio);

@@ -1,4 +1,3 @@
-threshold:
-  max-ratio: 0.002 // Maximum ratio of diamond_ore to stone that a player can have before being marked as suspicious
-  stone-minimum: 512 // Minumum amount of stone needed to be mined before staff recive alerts for xray. (Prevents false positives)
-  diamond-ore-minimum: 64 // Minumum amount of stone needed to be mined before staff recive alerts for xray. (Prevents false positives)
+maxRatio: 0.002 // Maximum ratio of diamond_ore to stone that a player can have before being marked as suspicious
+stoneMinimum: 512 // Minumum amount of stone needed to be mined before staff recive alerts for xray. (Prevents false positives)
+diamondMinimum: 64 // Minumum amount of stone needed to be mined before staff recive alerts for xray. (Prevents false positives)
