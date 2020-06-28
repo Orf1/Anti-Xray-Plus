@@ -8,7 +8,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.logging.Level;
 
 public class commandAntiXrayPlus implements CommandExecutor {
     private final Main main = JavaPlugin.getPlugin(Main.class);
