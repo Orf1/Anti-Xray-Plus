@@ -81,7 +81,7 @@ public final class Main extends JavaPlugin implements Listener {
             stoneMined++;
         }
         if (stoneMined != oldStoneMined || diamondOreMined != oldDiamondOreMined){
-            ratio = diamondOreMined / stoneMined;
+            ratio = (double) diamondOreMined / (double) stoneMined;
 
             getPlayerData().set(uuid + ".diamondOreMined", diamondOreMined);
             getPlayerData().set(uuid + ".stoneMined", stoneMined);
@@ -100,12 +100,17 @@ public final class Main extends JavaPlugin implements Listener {
         Player player = e.getPlayer();
         String uuid = player.getUniqueId().toString();
 
+        getPlayerData().createSection(uuid + ".playerName");
+        getPlayerData().set(uuid + ".playerName", player.getName());
+
         if (!getPlayerData().contains(uuid)){
             getPlayerData().createSection(uuid);
+            getPlayerData().createSection(uuid + ".playerName");
             getPlayerData().createSection(uuid + ".diamondOreMined");
             getPlayerData().createSection(uuid + ".stoneMined");
             getPlayerData().createSection(uuid + ".ratio");
 
+            getPlayerData().set(uuid + ".playerName", player.getName());
             getPlayerData().set(uuid + ".diamondOreMined", 1);
             getPlayerData().set(uuid + ".stoneMined", 1);
             getPlayerData().set(uuid + ".ratio", 1.0);
