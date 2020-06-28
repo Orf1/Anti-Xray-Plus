@@ -1,0 +1,13 @@
+name: Anti Xray Plus
+version: ${project.version}
+main: com.orf9.antixrayplus.Main
+api-version: 1.15.2
+load: STARTUP
+commands:
+  antixrayplus:
+    aliases:
+      - xray
+      - antixray
+      - xrayplus
+      - axray
+      - ores
