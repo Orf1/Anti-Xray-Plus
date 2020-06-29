@@ -40,7 +40,7 @@ public final class Main extends JavaPlugin implements Listener {
         this.getConfig().options().copyDefaults();
         saveDefaultConfig();
 
-        getCommand("antixrayplus").setExecutor(new commandAntiXrayPlus());
+        getCommand("antixrayplus").setExecutor(new CommandAntiXrayPlus());
 
         try {
             initiateFiles();
@@ -49,6 +49,10 @@ public final class Main extends JavaPlugin implements Listener {
         }
         int pluginId = 8008; // <-- Replace with the id of your plugin!
         Metrics metrics = new Metrics(this, pluginId);
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
+            //Data saving
+        }, 1200, 6000 );
     }
 
     @Override
@@ -108,10 +112,10 @@ public final class Main extends JavaPlugin implements Listener {
                     ratio = (double) diamondOreMined / (double) stoneMined;
                     getPlayerData().set(uuid + ".ratio", ratio);
 
-                    Double maxRatio = getConfig().getDouble("MaxRatio");
+                    Double maxRatio = getConfig().getDouble("max-ratio");
 
-                    int minStone = this.getConfig().getInt("StoneMinimum");
-                    int minDiamondOre = this.getConfig().getInt("DiamondMinimum");
+                    int minStone = this.getConfig().getInt("minimum-stone");
+                    int minDiamondOre = this.getConfig().getInt("minimum-diamond");
 
                     if (stoneMined > minStone) {
 
@@ -168,5 +172,33 @@ public final class Main extends JavaPlugin implements Listener {
                 ioException.printStackTrace();
             }
         }
+    }
+
+    public class PlayerData {
+
+        private int diamondMined;
+        private int stoneMined;
+
+        public PlayerData() {
+            this.diamondMined = 0;
+            this.stoneMined = 0;
+        }
+
+        public void addDiamondMined(int amount){
+            this.diamondMined += amount;
+        }
+
+        public final int getDiamondMined() {
+            return diamondMined;
+        }
+
+        public final int getStoneMined() {
+            return stoneMined;
+        }
+
+        public void addStoneMined(int amount) {
+            this.stoneMined += amount;
+        }
+
     }
 }

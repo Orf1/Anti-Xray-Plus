@@ -1,3 +1,6 @@
-MaxRatio: 0.002
-StoneMinimum: 1024
-DiamondMinimum: 64
+max-ratio: 0.002 #Maximum ratio of diamond_ore:stone that a player may have before being marked as suspicious
+minimum-stone: 1024 #Minimum of stone needed to be mined before a player can be marked as suspicous
+minimum-diamond: 64 #Minimum of diamond_ore needed to be mined before a player can be marked as suspicous
+
+#DO NOT TOUCH!
+config-version: 1.0

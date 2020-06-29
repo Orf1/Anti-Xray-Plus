@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 
-public class commandAntiXrayPlus implements CommandExecutor {
+public class CommandAntiXrayPlus implements CommandExecutor {
     private final Main main = JavaPlugin.getPlugin(Main.class);
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -33,10 +33,10 @@ public class commandAntiXrayPlus implements CommandExecutor {
                             player.sendMessage("Stone: " + stoneMined);
                             player.sendMessage("Ratio of Diamond to Stone: " + ratio);
 
-                            double maxRatio = main.getConfig().getDouble("MaxRatio");
+                            Double maxRatio = main.getConfig().getDouble("max-ratio");
 
-                            int minStone = main.getConfig().getInt("StoneMinimum");
-                            int minDiamondOre = main.getConfig().getInt("DiamondMinimum");
+                            int minStone = main.getConfig().getInt("minimum-stone");
+                            int minDiamondOre = main.getConfig().getInt("minimum-diamond");
 
                             if (ratio > maxRatio && stoneMined > minStone && diamondOreMined > minDiamondOre) {
                                 player.sendMessage(ChatColor.RED + "Player may be using XRAY! Ratio: " + ratio);
