@@ -50,12 +50,15 @@ public class CommandAntiXrayPlus implements CommandExecutor {
 
 
 
+                    }else if (args[0].equalsIgnoreCase("reload")){
+                     main.reloadConfig();
+                        player.sendMessage("Config Reloaded!");
                     } else {
-                        player.sendMessage("Invalid Arguments! Usage: /antixrayplus [player]");
+                        player.sendMessage("Invalid Arguments! Usage: /antixrayplus [player] | /antixrayplus reload");
                     }
 
                 } else {
-                    player.sendMessage("Invalid Arguments! Usage: /antixrayplus [player]");
+                    player.sendMessage("Invalid Arguments! Usage: /antixrayplus [player] | /antixrayplus reload");
                 }
             } else {
                 player.sendMessage(ChatColor.RED + "You do not have permission to use this command!");
@@ -106,8 +109,11 @@ public class CommandAntiXrayPlus implements CommandExecutor {
 
 
 
+                    } else if (args[0].equalsIgnoreCase("reload")){
+                        main.reloadConfig();
+                        player.sendMessage("Config Reloaded!");
                     } else {
-                        player.sendMessage("You must specify a valid player!");
+                        player.sendMessage("Invalid Arguments! Usage: /antixrayplus [player] | /antixrayplus reload");
                     }
 
                 } else {
