@@ -108,32 +108,22 @@ public final class Main extends JavaPlugin implements Listener {
                     ratio = (double) diamondOreMined / (double) stoneMined;
                     getPlayerData().set(uuid + ".ratio", ratio);
 
-                    Double maxRatio = getConfig().getDouble("maxRatio");
+                    Double maxRatio = getConfig().getDouble("MaxRatio");
 
-                    int minStone = getConfig().getInt("stoneMinimum");
-                    int minDiamondOre = getConfig().getInt("diamondMinimum");
-                    if (minStone == 0) {
-                        minStone = 1024;
-                    }
-                    if (minDiamondOre == 0) {
-                        minDiamondOre = 32;
-                    }
-                    if (maxRatio == 0) {
-                        maxRatio = 0.002;
-                    }
+                    int minStone = this.getConfig().getInt("StoneMinimum");
+                    int minDiamondOre = this.getConfig().getInt("DiamondMinimum");
 
                     if (stoneMined > minStone) {
 
-
                         if (diamondOreMined > minDiamondOre) {
 
-                            if (ratio > maxRatio || wasDiamond) {
+                            if (ratio > maxRatio && wasDiamond) {
 
                                 getLogger().log(Level.WARNING, "Player " + player.getName() + " may be using cheats! Ratio: " + ratio);
 
                                 Bukkit.getOnlinePlayers().forEach(pl -> {
                                     if (pl.hasPermission("antixrayplus.alerts")) {
-                                        pl.sendMessage(ChatColor.RED + "Player " + player + " may be using XRAY! Ratio:" + ratio);
+                                        pl.sendMessage(ChatColor.RED + "Player " + player.getName() + " may be using XRAY! Ratio:" + ratio);
                                     }
                                 });
 
