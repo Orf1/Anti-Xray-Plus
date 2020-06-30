@@ -24,18 +24,16 @@ import java.util.logging.Level;
 
 public final class Main extends JavaPlugin implements Listener {
 
-    private File playerDataFile;
-    private YamlConfiguration modifyPlayerData;
-
     HashMap<String, Integer> stoneMined = new HashMap<>();
     HashMap<String, Integer> diamondOreMined = new HashMap<>();
     HashMap<String, Double> ratio = new HashMap<>();
-
     Double maxRatio = getConfig().getDouble("max-ratio");
-
     int minStone = this.getConfig().getInt("minimum-stone");
     int minDiamondOre = this.getConfig().getInt("minimum-diamond");
     int updateFrequency = this.getConfig().getInt("update-frequency");
+    private File playerDataFile;
+    private YamlConfiguration modifyPlayerData;
+    String configVersion = this.getConfig().getString("config-version");
 
     @Override
     public void onEnable() {
@@ -71,7 +69,7 @@ public final class Main extends JavaPlugin implements Listener {
                     e.printStackTrace();
                 }
             }
-        }, 0, getConfig().getInt("update-frequency") );
+        }, 0, getConfig().getInt("update-frequency"));
     }
 
 
@@ -189,13 +187,14 @@ public final class Main extends JavaPlugin implements Listener {
             }
             this.stoneMined.put(uuid, 0);
             this.diamondOreMined.put(uuid, 0);
-            this.ratio.put(uuid , 0.0);
-        }else {
+            this.ratio.put(uuid, 0.0);
+        } else {
             this.stoneMined.put(uuid, (int) getPlayerData().get(uuid + ".stoneMined"));
             this.diamondOreMined.put(uuid, (int) getPlayerData().get(uuid + ".diamondOreMined"));
-            this.ratio.put(uuid , (double) getPlayerData().get(uuid + ".ratio"));
+            this.ratio.put(uuid, (double) getPlayerData().get(uuid + ".ratio"));
         }
     }
+
     @EventHandler
     public void onKick(PlayerKickEvent e) {
         String uuid = e.getPlayer().getUniqueId().toString();
@@ -210,8 +209,9 @@ public final class Main extends JavaPlugin implements Listener {
             ex.printStackTrace();
         }
     }
+
     @EventHandler
-    public void onLeave(PlayerQuitEvent e){
+    public void onLeave(PlayerQuitEvent e) {
         String uuid = e.getPlayer().getUniqueId().toString();
 
         getPlayerData().set(uuid + ".stoneMined", this.stoneMined.get(uuid));
