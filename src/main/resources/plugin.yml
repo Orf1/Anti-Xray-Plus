@@ -2,7 +2,6 @@ name: AntiXrayPlus
 version: ${project.version}
 main: com.orf9.antixrayplus.Main
 api-version: 1.13
-load: STARTUP
 commands:
   antixrayplus:
     aliases:

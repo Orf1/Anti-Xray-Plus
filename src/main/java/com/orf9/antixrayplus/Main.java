@@ -11,30 +11,37 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerKickEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.logging.Level;
 
 
 public final class Main extends JavaPlugin implements Listener {
+
     private File playerDataFile;
     private YamlConfiguration modifyPlayerData;
 
-    public YamlConfiguration getPlayerData() {
-        return modifyPlayerData;
-    }
+    HashMap<String, Integer> stoneMined = new HashMap<>();
+    HashMap<String, Integer> diamondOreMined = new HashMap<>();
+    HashMap<String, Double> ratio = new HashMap<>();
 
-    public File getPlayerDataFile() {
-        return playerDataFile;
-    }
+    Double maxRatio = getConfig().getDouble("max-ratio");
+
+    int minStone = this.getConfig().getInt("minimum-stone");
+    int minDiamondOre = this.getConfig().getInt("minimum-diamond");
+    int updateFrequency = this.getConfig().getInt("update-frequency");
 
     @Override
     public void onEnable() {
-
-
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            onlinePlayer.kickPlayer("Server reloaded, please re-join!");
+        }
         Bukkit.getPluginManager().registerEvents(this, this);
 
         this.getConfig().options().copyDefaults();
@@ -47,16 +54,41 @@ public final class Main extends JavaPlugin implements Listener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        int pluginId = 8008; // <-- Replace with the id of your plugin!
+        int pluginId = 8008;
         Metrics metrics = new Metrics(this, pluginId);
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(this, () -> {
-            //Data saving
-        }, 1200, 6000 );
+            for (Player player : Bukkit.getOnlinePlayers()) {
+                String uuid = player.getUniqueId().toString();
+
+                getPlayerData().set(uuid + ".stoneMined", this.stoneMined.get(uuid));
+                getPlayerData().set(uuid + ".diamondOreMined", this.diamondOreMined.get(uuid));
+                getPlayerData().set(uuid + ".ratio", this.ratio.get(uuid));
+
+                try {
+                    getPlayerData().save(getPlayerDataFile());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, 0, getConfig().getInt("update-frequency") );
     }
+
 
     @Override
     public void onDisable() {
+        for (Player onlinePlayer : Bukkit.getOnlinePlayers()) {
+            String uuid = onlinePlayer.getUniqueId().toString();
+            getPlayerData().set(uuid + ".stoneMined", this.stoneMined.get(uuid));
+            getPlayerData().set(uuid + ".diamondOreMined", this.diamondOreMined.get(uuid));
+            getPlayerData().set(uuid + ".ratio", this.ratio.get(uuid));
+
+            try {
+                getPlayerData().save(getPlayerDataFile());
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
     }
 
     public void initiateFiles() throws IOException {
@@ -77,8 +109,8 @@ public final class Main extends JavaPlugin implements Listener {
         Block block = e.getBlock();
         if (block.getType().equals(Material.DIAMOND_ORE) || block.getType().equals(Material.STONE)) {
 
-            int oldStoneMined = (int) getPlayerData().get(uuid + ".stoneMined");
-            int oldDiamondOreMined = (int) getPlayerData().get(uuid + ".diamondOreMined");
+            int oldStoneMined = this.stoneMined.get(uuid);
+            int oldDiamondOreMined = this.diamondOreMined.get(uuid);
 
             int stoneMined = oldStoneMined;
             int diamondOreMined = oldDiamondOreMined;
@@ -90,32 +122,22 @@ public final class Main extends JavaPlugin implements Listener {
                 ItemStack item = player.getInventory().getItemInMainHand();
                 if (!item.containsEnchantment(Enchantment.SILK_TOUCH)) {
                     diamondOreMined++;
-                    getPlayerData().set(uuid + ".diamondOreMined", diamondOreMined);
+                    this.diamondOreMined.put(uuid, diamondOreMined);
                     wasDiamond = true;
-                    try {
-                        getPlayerData().save(getPlayerDataFile());
-                    } catch (IOException ioException) {
-                        ioException.printStackTrace();
-                    }
                 }
             } else if (block.getType().equals(Material.STONE)) {
                 stoneMined++;
-                getPlayerData().set(uuid + ".stoneMined", stoneMined);
-                try {
-                    getPlayerData().save(getPlayerDataFile());
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
+                this.stoneMined.put(uuid, stoneMined);
             }
             if (stoneMined != oldStoneMined || diamondOreMined != oldDiamondOreMined) {
                 if (!(diamondOreMined == 0) && !(stoneMined == 0)) {
                     ratio = (double) diamondOreMined / (double) stoneMined;
-                    getPlayerData().set(uuid + ".ratio", ratio);
+                    this.ratio.put(uuid, ratio);
 
-                    Double maxRatio = getConfig().getDouble("max-ratio");
+                    Double maxRatio = this.maxRatio;
 
-                    int minStone = this.getConfig().getInt("minimum-stone");
-                    int minDiamondOre = this.getConfig().getInt("minimum-diamond");
+                    int minStone = this.minStone;
+                    int minDiamondOre = this.minDiamondOre;
 
                     if (stoneMined > minStone) {
 
@@ -135,16 +157,9 @@ public final class Main extends JavaPlugin implements Listener {
                         }
                     }
                 }
+                this.stoneMined.put(uuid, stoneMined);
+                this.diamondOreMined.put(uuid, diamondOreMined);
 
-                getPlayerData().set(uuid + ".diamondOreMined", diamondOreMined);
-                getPlayerData().set(uuid + ".stoneMined", stoneMined);
-
-
-                try {
-                    getPlayerData().save(getPlayerDataFile());
-                } catch (IOException ioException) {
-                    ioException.printStackTrace();
-                }
             }
         }
     }
@@ -154,7 +169,8 @@ public final class Main extends JavaPlugin implements Listener {
         Player player = e.getPlayer();
         String uuid = player.getUniqueId().toString();
 
-        if (!getPlayerData().contains(uuid)) {
+
+        if (!getPlayerData().contains(uuid) || !getPlayerData().contains(uuid + ".diamondOreMined") || !getPlayerData().contains(uuid + ".stoneMined") || !getPlayerData().contains(uuid + ".ratio")) {
             getPlayerData().createSection(uuid);
             getPlayerData().createSection(uuid + ".playerName");
             getPlayerData().createSection(uuid + ".diamondOreMined");
@@ -164,41 +180,57 @@ public final class Main extends JavaPlugin implements Listener {
             getPlayerData().set(uuid + ".playerName", player.getName());
             getPlayerData().set(uuid + ".diamondOreMined", 0);
             getPlayerData().set(uuid + ".stoneMined", 0);
-            getPlayerData().set(uuid + ".ratio", 0);
+            getPlayerData().set(uuid + ".ratio", 0.0);
 
             try {
                 getPlayerData().save(getPlayerDataFile());
             } catch (IOException ioException) {
                 ioException.printStackTrace();
             }
+            this.stoneMined.put(uuid, 0);
+            this.diamondOreMined.put(uuid, 0);
+            this.ratio.put(uuid , 0.0);
+        }else {
+            this.stoneMined.put(uuid, (int) getPlayerData().get(uuid + ".stoneMined"));
+            this.diamondOreMined.put(uuid, (int) getPlayerData().get(uuid + ".diamondOreMined"));
+            this.ratio.put(uuid , (double) getPlayerData().get(uuid + ".ratio"));
+        }
+    }
+    @EventHandler
+    public void onKick(PlayerKickEvent e) {
+        String uuid = e.getPlayer().getUniqueId().toString();
+
+        getPlayerData().set(uuid + ".stoneMined", this.stoneMined.get(uuid));
+        getPlayerData().set(uuid + ".diamondOreMined", this.diamondOreMined.get(uuid));
+        getPlayerData().set(uuid + ".ratio", this.ratio.get(uuid));
+
+        try {
+            getPlayerData().save(getPlayerDataFile());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+    @EventHandler
+    public void onLeave(PlayerQuitEvent e){
+        String uuid = e.getPlayer().getUniqueId().toString();
+
+        getPlayerData().set(uuid + ".stoneMined", this.stoneMined.get(uuid));
+        getPlayerData().set(uuid + ".diamondOreMined", this.diamondOreMined.get(uuid));
+        getPlayerData().set(uuid + ".ratio", this.ratio.get(uuid));
+
+        try {
+            getPlayerData().save(getPlayerDataFile());
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
-    public class PlayerData {
-
-        private int diamondMined;
-        private int stoneMined;
-
-        public PlayerData() {
-            this.diamondMined = 0;
-            this.stoneMined = 0;
-        }
-
-        public void addDiamondMined(int amount){
-            this.diamondMined += amount;
-        }
-
-        public final int getDiamondMined() {
-            return diamondMined;
-        }
-
-        public final int getStoneMined() {
-            return stoneMined;
-        }
-
-        public void addStoneMined(int amount) {
-            this.stoneMined += amount;
-        }
-
+    public YamlConfiguration getPlayerData() {
+        return modifyPlayerData;
     }
+
+    public File getPlayerDataFile() {
+        return playerDataFile;
+    }
+
 }

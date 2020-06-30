@@ -2,5 +2,7 @@ max-ratio: 0.002 #Maximum ratio of diamond_ore:stone that a player may have befo
 minimum-stone: 1024 #Minimum of stone needed to be mined before a player can be marked as suspicous
 minimum-diamond: 64 #Minimum of diamond_ore needed to be mined before a player can be marked as suspicous
 
+update-frequency: 12000 #How often the server backs up playerdata to file in ticks. (Lower value can cause lag!)
+
 #DO NOT TOUCH!
 config-version: 1.0
