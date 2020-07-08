@@ -1,4 +1,4 @@
-package com.orf9.antixrayplus;
+package dev.orf1.plugins.antixrayplus;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

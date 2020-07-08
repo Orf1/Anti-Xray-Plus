@@ -1,6 +1,6 @@
 name: AntiXrayPlus
 version: ${project.version}
-main: com.orf9.antixrayplus.Main
+main: dev.orf1.plugins.antixrayplus.Main
 api-version: 1.13
 commands:
   antixrayplus:

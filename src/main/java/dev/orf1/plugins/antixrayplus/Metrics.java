@@ -1,4 +1,4 @@
-package com.orf9.antixrayplus;
+package dev.orf1.plugins.antixrayplus;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
